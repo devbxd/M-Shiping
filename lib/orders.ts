@@ -5,7 +5,11 @@ import type { Order, OrderStatus } from "./types";
 
 // Local JSON store — fine for launch volume. Swap for Supabase/Postgres later
 // without touching the pages: only these functions read/write orders.
-const FILE = path.join(process.cwd(), "data", "orders.json");
+// On Vercel the project folder is read-only: only /tmp is writable, and it is
+// wiped regularly. Good enough to test; use a real database for production.
+const FILE = process.env.VERCEL
+  ? path.join("/tmp", "orders.json")
+  : path.join(process.cwd(), "data", "orders.json");
 
 function read(): Order[] {
   if (!fs.existsSync(FILE)) return [];
