@@ -134,7 +134,8 @@ const plan = onlyDept ? { [onlyDept]: onlyKeyword ? [onlyKeyword] : PLAN[onlyDep
 const pages = Number(pagesArg) || 2;
 
 const file = "data/products.json";
-const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : [];
+// Demo items are dropped as soon as real products are imported.
+const existing = (fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : []).filter((p) => p.supplier !== "demo");
 const byId = new Map(existing.map((p) => [p.id, p]));
 let added = 0;
 
