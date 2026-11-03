@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p 3000",
     "seed:demo": "node scripts/seed-demo.mjs",
-    "import:aliexpress": "node scripts/import-aliexpress.mjs"
+    "import:aliexpress": "node scripts/import-aliexpress.mjs",
+    "import:cj": "node scripts/import-cj.mjs"
   },
   "dependencies": {
     "next": "15.5.4",

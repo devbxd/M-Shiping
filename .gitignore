@@ -4,3 +4,4 @@ node_modules
 .env.local
 data/orders.json
 *.tsbuildinfo
+data/.cj-token.json
