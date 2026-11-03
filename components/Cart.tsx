@@ -66,7 +66,7 @@ export function BagLink() {
   const { count, ready } = useCart();
   return (
     <a href="/bag">
-      Bag <span className="bag-count">({ready ? count : 0})</span>
+      Bag{ready && count > 0 && <span className="bag-count">{count}</span>}
     </a>
   );
 }

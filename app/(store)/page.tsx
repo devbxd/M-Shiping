@@ -1,96 +1,79 @@
 import Link from "next/link";
-import { DEPARTMENTS, DELIVERY } from "@/lib/config";
-import { allProducts, departmentCounts, queryProducts } from "@/lib/products";
+import { DEPARTMENTS } from "@/lib/config";
+import { queryProducts } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
+import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-function pick(dept: string, skip = 0) {
-  return queryProducts({ department: dept, sort: "rating", perPage: 1 + skip }).items[skip];
+const top = (department: string, n = 1) => queryProducts({ department, sort: "rating", perPage: n }).items;
+
+function Rail({ title, href, items }: { title: string; href: string; items: Product[] }) {
+  if (!items.length) return null;
+  return (
+    <section className="section">
+      <div className="wrap">
+        <div className="section-head">
+          <h2 className="h2">{title}</h2>
+          <Link href={href} className="link-arrow">
+            See all
+          </Link>
+        </div>
+        <div className="rail">
+          {items.map((p) => (
+            <ProductCard key={p.id} p={p} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default function Home() {
-  const total = allProducts().length;
-  const counts = departmentCounts();
-  const mosaic = [
-    { p: pick("tech"), tag: "Tech" },
-    { p: pick("shoes"), tag: "Shoes" },
-    { p: pick("beauty"), tag: "Beauty" },
-  ].filter((m) => m.p);
+  const heroA = top("shoes")[0];
+  const heroB = top("tech")[0];
   const latest = queryProducts({ sort: "new", perPage: 8 }).items;
-  const tech = queryProducts({ department: "tech", sort: "rating", perPage: 4 }).items;
-  const women = queryProducts({ department: "women", sort: "rating", perPage: 4 }).items;
 
   return (
     <>
-      <section className="hero">
-        <div className="hero-copy">
-          <span className="eyebrow">Beirut · Tripoli · Saida · Everywhere in between</span>
-          <h1 className="display">
-            The world&rsquo;s
-            <br />
-            shelves, <i>delivered</i>
-            <br />
-            to Lebanon.
-          </h1>
-          <div style={{ display: "grid", gap: 28 }}>
-            <p>
-              Clothing, shoes, tech, beauty and home &mdash; sourced from the largest marketplaces on earth, checked by
-              us, and brought to your door. You pay only when it arrives.
-            </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Link href="/shop" className="btn">
-                Start shopping
-              </Link>
-              <Link href="#how" className="btn ghost">
-                How it works
-              </Link>
+      <section className="campaign">
+        {heroA && (
+          <Link href="/shop?d=shoes" className="panel-promo" style={{ background: "var(--sand)" }}>
+            <img src={heroA.images[0]} alt="" />
+            <div className="copy">
+              <h2>New season shoes</h2>
+              <p>Sneakers, heels and everyday pairs, delivered across Lebanon.</p>
+              <span className="btn light">Shop shoes</span>
             </div>
-            <div className="hero-meta">
-              <div>
-                <b className="num">{total.toLocaleString()}</b>
-                <span className="eyebrow">Products</span>
-              </div>
-              <div>
-                <b>{DELIVERY.estimate}</b>
-                <span className="eyebrow">To your door</span>
-              </div>
-              <div>
-                <b>Cash</b>
-                <span className="eyebrow">On delivery</span>
-              </div>
+          </Link>
+        )}
+        {heroB && (
+          <Link href="/shop?d=tech" className="panel-promo" style={{ background: "var(--sage)" }}>
+            <img src={heroB.images[0]} alt="" />
+            <div className="copy">
+              <h2>Tech for less</h2>
+              <p>Phones, earbuds, laptops and everything that charges.</p>
+              <span className="btn light">Shop tech</span>
             </div>
-          </div>
-        </div>
-        <div className="hero-mosaic">
-          {mosaic.map(({ p, tag }) => (
-            <Link key={p!.id} href={`/product/${p!.id}`}>
-              <img src={p!.images[0]} alt={p!.title} />
-              <span className="tag">{tag}</span>
-            </Link>
-          ))}
-        </div>
+          </Link>
+        )}
       </section>
 
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <h2 className="h2">Departments</h2>
-            <span className="eyebrow">{DEPARTMENTS.length} sections, one checkout</span>
+            <h2 className="h2">Shop by category</h2>
           </div>
-          <div className="dept-index">
-            {DEPARTMENTS.map((d, i) => (
-              <Link key={d.slug} href={`/shop?d=${d.slug}`}>
-                <div className="row">
-                  <span className="eyebrow num">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="eyebrow num">{counts[d.slug] ?? 0} items</span>
-                </div>
-                <div>
-                  <h3>{d.name}</h3>
-                  <p>{d.blurb}</p>
-                </div>
-              </Link>
-            ))}
+          <div className="cats">
+            {DEPARTMENTS.map((d) => {
+              const p = top(d.slug)[0];
+              return (
+                <Link key={d.slug} href={`/shop?d=${d.slug}`} className="cat">
+                  <div className="cat-img">{p && <img src={p.images[0]} alt="" loading="lazy" />}</div>
+                  <span>{d.name}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -98,9 +81,9 @@ export default function Home() {
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <h2 className="h2">Just in</h2>
+            <h2 className="h2">New in</h2>
             <Link href="/shop" className="link-arrow">
-              View all
+              See all
             </Link>
           </div>
           <div className="grid">
@@ -111,51 +94,31 @@ export default function Home() {
         </div>
       </section>
 
-      {[
-        { title: "Tech, well reviewed", dept: "tech", items: tech },
-        { title: "Women, best rated", dept: "women", items: women },
-      ].map((s) =>
-        s.items.length ? (
-          <section className="section" key={s.dept}>
-            <div className="wrap">
-              <div className="section-head">
-                <h2 className="h2">{s.title}</h2>
-                <Link href={`/shop?d=${s.dept}`} className="link-arrow">
-                  Shop the department
-                </Link>
-              </div>
-              <div className="grid">
-                {s.items.map((p) => (
-                  <ProductCard key={p.id} p={p} />
-                ))}
-              </div>
-            </div>
-          </section>
-        ) : null,
-      )}
+      <Rail title="Popular in women" href="/shop?d=women&sort=rating" items={top("women", 8)} />
 
-      <section className="section" id="how">
+      <section className="band">
         <div className="wrap">
-          <div className="section-head">
-            <h2 className="h2">How an order works</h2>
-            <span className="eyebrow">No card needed</span>
-          </div>
-          <div className="promise">
-            {[
-              ["01", "You order", "Fill your bag and leave your name, phone and address. Takes a minute."],
-              ["02", "We call you", "A real person confirms the order, size and address with you by phone or WhatsApp."],
-              ["03", "We source it", "We buy it from the supplier and follow it all the way to Lebanon."],
-              ["04", "You pay at the door", "Cash on delivery or Whish. Nothing to pay before it arrives."],
-            ].map(([n, h, t]) => (
-              <div key={n}>
-                <span className="eyebrow num">{n}</span>
-                <h4>{h}</h4>
-                <p>{t}</p>
-              </div>
-            ))}
+          <h2>
+            Order today.
+            <br />
+            Pay at your door.
+          </h2>
+          <div>
+            <p>
+              No card needed. We call you to confirm every order, then deliver it anywhere in Lebanon. Cash or Whish,
+              when it arrives.
+            </p>
+            <Link href="/shop" className="btn light">
+              Start shopping
+            </Link>
           </div>
         </div>
       </section>
+
+      <Rail title="Best rated tech" href="/shop?d=tech&sort=rating" items={top("tech", 8)} />
+      <Rail title="For the home" href="/shop?d=home" items={top("home", 8)} />
+      <Rail title="Beauty" href="/shop?d=beauty" items={top("beauty", 8)} />
+      <div style={{ height: "clamp(56px, 7vw, 96px)" }} />
     </>
   );
 }

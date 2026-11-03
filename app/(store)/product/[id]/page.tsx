@@ -50,7 +50,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <span>Payment</span>
               <span>Cash on delivery or Whish</span>
             </div>
-            {p.rating ? (
+            {p.rating && p.rating >= 4 ? (
               <div>
                 <span>Rating</span>
                 <span className="num">{p.rating.toFixed(1)} / 5</span>

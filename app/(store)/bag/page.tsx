@@ -11,7 +11,6 @@ export default function Bag() {
   return (
     <div className="wrap">
       <div className="page-title">
-        <span className="eyebrow">Your bag</span>
         <h1 className="display">Bag</h1>
       </div>
       {ready && lines.length === 0 ? (

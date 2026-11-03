@@ -24,9 +24,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="wrap">
       <div className="confirm">
-        <span className="eyebrow">
-          Order <span className="num">{o.id}</span>
-        </span>
+        <span className="muted">Order {o.id}</span>
         <h1 className="display">
           {o.status === "cancelled" ? "This order was cancelled." : <>Thank you, {first}.</>}
         </h1>
@@ -37,14 +35,15 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             after confirmation.
           </p>
         )}
-        <div className="steps">
-          {FLOW.map(([s, label], i) => (
-            <div key={s} className={i <= reached ? "done" : ""}>
-              <span className="num">{String(i + 1).padStart(2, "0")}</span>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
+        {o.status !== "cancelled" && (
+          <div className="tracker">
+            {FLOW.map(([s, label], i) => (
+              <div key={s} className={i <= reached ? "done" : ""}>
+                {label}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="summary" style={{ position: "static" }}>
           {o.items.map((it) => (
             <div className="row" key={it.productId}>

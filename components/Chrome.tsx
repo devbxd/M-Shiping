@@ -13,42 +13,48 @@ export function Logo() {
   );
 }
 
-export function Header({ active }: { active?: string }) {
+function DeptLinks() {
+  return (
+    <nav className="main-nav" aria-label="Departments">
+      {DEPARTMENTS.map((d) => (
+        <Link key={d.slug} href={`/shop?d=${d.slug}`}>
+          {d.name}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+export function Header() {
   return (
     <>
       <div className="notice">
         <div className="wrap">
-          <span>Free delivery anywhere in Lebanon above ${DELIVERY.freeAbove}</span>
-          <span>Pay cash on delivery · Every order confirmed by phone</span>
+          <span className="long">Free delivery across Lebanon on orders over ${DELIVERY.freeAbove} &middot; Pay cash when it arrives</span>
+          <span className="short">Free delivery over ${DELIVERY.freeAbove} &middot; Cash on delivery</span>
         </div>
       </div>
       <header className="header">
         <div className="wrap">
           <div className="header-row">
-            <form className="search" action="/shop" role="search">
-              <input name="q" placeholder="Search everything" aria-label="Search" />
-            </form>
             <Link href="/" aria-label={SHOP.name + " home"}>
               <Logo />
             </Link>
-            <div className="header-actions">
-              <Link href="/shop">Shop</Link>
+            <DeptLinks />
+            <div className="header-tools">
+              <form className="search" action="/shop" role="search">
+                <input name="q" placeholder="Search" aria-label="Search" type="search" />
+              </form>
+              <Link href="/shop#search" className="search-link">
+                Search
+              </Link>
               <BagLink />
             </div>
           </div>
         </div>
-        <div className="deptbar">
+        <div className="mobile-nav">
           <div className="wrap">
-            <nav aria-label="Departments">
-              <Link href="/shop" aria-current={active === "all" ? "page" : undefined}>
-                All
-              </Link>
-              {DEPARTMENTS.map((d) => (
-                <Link key={d.slug} href={`/shop?d=${d.slug}`} aria-current={active === d.slug ? "page" : undefined}>
-                  {d.name}
-                </Link>
-              ))}
-            </nav>
+            <DeptLinks />
           </div>
         </div>
       </header>
@@ -57,22 +63,18 @@ export function Header({ active }: { active?: string }) {
 }
 
 export function Footer() {
-  const [a, b] = SHOP.name.split("&");
   return (
     <footer className="footer">
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <h6 className="eyebrow">{SHOP.name}</h6>
-            <p style={{ maxWidth: 360, margin: 0, color: "var(--ink-2)", fontSize: 14 }}>
-              Millions of products from the world&rsquo;s largest marketplaces, chosen, checked and delivered to your
-              door in Lebanon. You pay when it arrives.
-            </p>
+            <Logo />
+            <p>Clothing, shoes, tech, beauty and home, delivered to your door anywhere in Lebanon.</p>
           </div>
           <div>
-            <h6 className="eyebrow">Shop</h6>
+            <h6>Shop</h6>
             <ul>
-              {DEPARTMENTS.slice(0, 5).map((d) => (
+              {DEPARTMENTS.slice(0, 6).map((d) => (
                 <li key={d.slug}>
                   <Link href={`/shop?d=${d.slug}`}>{d.name}</Link>
                 </li>
@@ -80,29 +82,29 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h6 className="eyebrow">Help</h6>
+            <h6>Help</h6>
             <ul>
-              <li>Delivery: {DELIVERY.estimate}</li>
+              <li>Delivery in {DELIVERY.estimate}</li>
               <li>Cash on delivery</li>
               <li>Whish Money</li>
+              <li>
+                <Link href="/bag">Your bag</Link>
+              </li>
             </ul>
           </div>
           <div>
-            <h6 className="eyebrow">Contact</h6>
+            <h6>Contact</h6>
             <ul>
               <li>WhatsApp {SHOP.whatsapp}</li>
               <li>{SHOP.email}</li>
             </ul>
           </div>
         </div>
-        <div className="footer-big" aria-hidden>
-          {a}
-          <em>&amp;</em>
-          {b}
-        </div>
         <div className="footer-base">
-          <span>&copy; {new Date().getFullYear()} {SHOP.name}. Beirut, Lebanon.</span>
-          <span>Prices in USD, delivery included above ${DELIVERY.freeAbove}.</span>
+          <span>
+            &copy; {new Date().getFullYear()} {SHOP.name}
+          </span>
+          <span>Prices in USD</span>
         </div>
       </div>
     </footer>

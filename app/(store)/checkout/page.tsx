@@ -77,12 +77,12 @@ export default function Checkout() {
   return (
     <div className="wrap">
       <div className="page-title">
-        <span className="eyebrow">Step 2 of 2</span>
+        
         <h1 className="display">Checkout</h1>
       </div>
       <form className="two-col" onSubmit={submit}>
         <div className="form">
-          <span className="eyebrow" style={{ color: "var(--ink)" }}>Delivery details</span>
+          <h2 className="form-title">Delivery details</h2>
           <div className="pair">
             <div className="field">
               <label htmlFor="name">Full name</label>
@@ -119,7 +119,7 @@ export default function Checkout() {
             <textarea id="notes" name="notes" />
           </div>
 
-          <span className="eyebrow" style={{ color: "var(--ink)", marginTop: 12 }}>Payment</span>
+          <h2 className="form-title" style={{ marginTop: 12 }}>Payment</h2>
           <div className="choice">
             <label>
               <input type="radio" name="payment" value="cod" defaultChecked />

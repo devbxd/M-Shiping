@@ -10,14 +10,13 @@ export function ProductCard({ p }: { p: Product }) {
       <div className="card-img">
         <img className={"main" + (alt ? " has-alt" : "")} src={p.images[0]} alt={p.title} loading="lazy" />
         {alt && <img className="alt" src={alt} alt="" loading="lazy" aria-hidden />}
-        {off >= 10 && <span className="card-flag sale">−{off}%</span>}
+        {off >= 10 && <span className="card-flag">−{off}%</span>}
       </div>
       <div className="card-body">
-        <span className="card-cat">{p.brand || p.category}</span>
         <span className="card-title">{p.title}</span>
-        <span className="price">
-          {money(p.price)}
-          {p.compareAt && <s>{money(p.compareAt)}</s>}
+        <span className={"price" + (off >= 10 ? " sale" : "")}>
+          <span>{money(p.price)}</span>
+          {off >= 10 && <s>{money(p.compareAt!)}</s>}
         </span>
       </div>
     </Link>

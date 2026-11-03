@@ -5,7 +5,7 @@ import { useCart, type CartLine } from "@/components/Cart";
 export function Gallery({ images, title }: { images: string[]; title: string }) {
   const [i, setI] = useState(0);
   return (
-    <div className="gallery">
+    <div className={"gallery" + (images.length < 2 ? " single" : "")}>
       <div className="thumbs">
         {images.map((src, n) => (
           <button key={src} className={n === i ? "on" : ""} onClick={() => setI(n)} aria-label={`Image ${n + 1}`}>
