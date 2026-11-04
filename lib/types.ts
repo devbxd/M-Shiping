@@ -17,7 +17,20 @@ export type Product = {
   reviews?: number;
   description: string;
   createdAt: string;
+  supplierSku?: string;
+  variants?: Variant[];
 };
+
+export type Variant = {
+  vid: string;
+  sku?: string;
+  options: Record<string, string>; // e.g. { Color: "Black", Size: "M" }
+  image?: string;
+  cost: number;
+  price: number;
+};
+
+export const variantLabel = (v: Pick<Variant, "options">) => Object.values(v.options).join(" / ");
 
 export type OrderStatus =
   | "pending" // received, waiting for our validation
@@ -36,6 +49,9 @@ export type OrderItem = {
   qty: number;
   supplier: Supplier;
   supplierUrl?: string;
+  vid?: string;
+  variant?: string; // "Black / M"
+  sku?: string;
 };
 
 export type Order = {

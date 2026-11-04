@@ -1,21 +1,32 @@
 "use client";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-export type CartLine = { id: string; title: string; image: string; price: number; qty: number };
+// key = productId, or productId:vid when a colour/size was chosen
+export type CartLine = {
+  key: string;
+  productId: string;
+  vid?: string;
+  variant?: string;
+  title: string;
+  image: string;
+  price: number;
+  qty: number;
+};
 
 type Ctx = {
   lines: CartLine[];
   count: number;
   subtotal: number;
   ready: boolean;
-  add: (l: Omit<CartLine, "qty">, qty?: number) => void;
-  setQty: (id: string, qty: number) => void;
-  remove: (id: string) => void;
+  add: (l: Omit<CartLine, "qty" | "key">, qty?: number) => void;
+  setQty: (key: string, qty: number) => void;
+  remove: (key: string) => void;
   clear: () => void;
 };
 
 const CartCtx = createContext<Ctx | null>(null);
-const KEY = "ms-bag-v1";
+const KEY = "ms-bag-v2";
+const keyOf = (l: { productId: string; vid?: string }) => (l.vid ? `${l.productId}:${l.vid}` : l.productId);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -43,13 +54,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     subtotal: lines.reduce((s, l) => s + l.qty * l.price, 0),
     add: (l, qty = 1) =>
       setLines((prev) => {
-        const found = prev.find((x) => x.id === l.id);
-        if (found) return prev.map((x) => (x.id === l.id ? { ...x, qty: Math.min(10, x.qty + qty) } : x));
-        return [...prev, { ...l, qty }];
+        const key = keyOf(l);
+        const found = prev.find((x) => x.key === key);
+        if (found) return prev.map((x) => (x.key === key ? { ...x, qty: Math.min(10, x.qty + qty) } : x));
+        return [...prev, { ...l, key, qty }];
       }),
-    setQty: (id, qty) =>
-      setLines((prev) => prev.map((x) => (x.id === id ? { ...x, qty: Math.max(1, Math.min(10, qty)) } : x))),
-    remove: (id) => setLines((prev) => prev.filter((x) => x.id !== id)),
+    setQty: (key, qty) =>
+      setLines((prev) => prev.map((x) => (x.key === key ? { ...x, qty: Math.max(1, Math.min(10, qty)) } : x))),
+    remove: (key) => setLines((prev) => prev.filter((x) => x.key !== key)),
     clear: () => setLines([]),
   };
 

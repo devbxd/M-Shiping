@@ -95,8 +95,14 @@ export function Footer() {
           <div>
             <h6>Contact</h6>
             <ul>
-              <li>WhatsApp {SHOP.whatsapp}</li>
-              <li>{SHOP.email}</li>
+              <li>
+                <a href={SHOP.whatsappLink} target="_blank" rel="noopener">
+                  WhatsApp {SHOP.whatsapp}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a>
+              </li>
             </ul>
           </div>
         </div>

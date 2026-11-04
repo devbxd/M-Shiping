@@ -4,7 +4,7 @@ import { DEPARTMENTS } from "@/lib/config";
 import { queryProducts } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroSlider, type Slide } from "@/components/HeroSlider";
-import { AdCards, AdStrip } from "@/components/Ads";
+import { AdCards, AdRow, AdStrip } from "@/components/Ads";
 import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +49,7 @@ export default function Home() {
   return (
     <>
       {slides.length > 0 && <HeroSlider slides={slides} />}
+      <AdRow />
 
       <section className="section">
         <div className="wrap">

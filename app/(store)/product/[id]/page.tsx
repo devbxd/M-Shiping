@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DELIVERY, departmentName } from "@/lib/config";
+import { DELIVERY, SHOP, departmentName } from "@/lib/config";
 import { getProduct, queryProducts } from "@/lib/products";
 import { money } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
-import { Gallery, BuyBox } from "./client";
+import { ProductView } from "./client";
 
 export const dynamic = "force-dynamic";
 
@@ -24,17 +24,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <Link href="/shop">Shop</Link>/<Link href={`/shop?d=${p.department}`}>{departmentName(p.department)}</Link>/
         <Link href={`/shop?d=${p.department}&c=${encodeURIComponent(p.category)}`}>{p.category}</Link>
       </div>
-      <div className="pdp">
-        <Gallery images={p.images} title={p.title} />
-        <div className="buy">
-          <span className="eyebrow">{p.brand || p.category}</span>
-          <h1 className="display">{p.title}</h1>
-          <span className="price">
-            {money(p.price)}
-            {p.compareAt && <s>{money(p.compareAt)}</s>}
-          </span>
-          {p.description && <p style={{ margin: 0, color: "var(--ink-2)", maxWidth: 520, whiteSpace: "pre-line" }}>{p.description}</p>}
-          <BuyBox line={{ id: p.id, title: p.title, image: p.images[0], price: p.price }} />
+      <ProductView
+        id={p.id}
+        title={p.title}
+        kicker={p.brand || p.category}
+        images={p.images}
+        price={p.price}
+        compareAt={p.compareAt}
+        variants={p.variants}
+      >
+        {p.description && <p style={{ margin: 0, color: "var(--ink-2)", maxWidth: 520, whiteSpace: "pre-line" }}>{p.description}</p>}
           <div className="facts">
             <div>
               <span>Delivery</span>
@@ -50,6 +49,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <span>Payment</span>
               <span>Cash on delivery or Whish</span>
             </div>
+            <div>
+              <span>Questions?</span>
+              <a href={`${SHOP.whatsappLink}?text=${encodeURIComponent("Hi! About: " + p.title)}`} target="_blank" rel="noopener" className="link-arrow">
+                WhatsApp us
+              </a>
+            </div>
             {p.rating && p.rating >= 4 ? (
               <div>
                 <span>Rating</span>
@@ -57,8 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </div>
             ) : null}
           </div>
-        </div>
-      </div>
+      </ProductView>
       {related.length > 0 && (
         <section className="section" style={{ paddingTop: 0 }}>
           <div className="section-head">

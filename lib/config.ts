@@ -3,8 +3,9 @@ export const SHOP = {
   name: "M&Shopping",
   tagline: "Everything, delivered to Lebanon.",
   currency: "USD",
-  whatsapp: "+961 00 000 000",
-  email: "orders@mshopping.example",
+  whatsapp: "+961 71 335 614",
+  whatsappLink: "https://wa.me/96171335614",
+  email: "boudytwitch@gmail.com",
 };
 
 // Delivery inside Lebanon, charged once per order.

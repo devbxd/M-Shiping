@@ -29,24 +29,25 @@ export default function Bag() {
         <div className="two-col">
           <div>
             {lines.map((l) => (
-              <div className="line" key={l.id}>
-                <Link href={`/product/${l.id}`} className="thumb">
+              <div className="line" key={l.key}>
+                <Link href={`/product/${l.productId}`} className="thumb">
                   <img src={img(l.image, 240)} alt="" />
                 </Link>
                 <div className="meta">
-                  <Link href={`/product/${l.id}`}>{l.title}</Link>
+                  <Link href={`/product/${l.productId}`}>{l.title}</Link>
+                  {l.variant && <span className="muted">{l.variant}</span>}
                   <span className="num muted">{money(l.price)}</span>
                   <div className="controls">
                     <div className="qty">
-                      <button onClick={() => setQty(l.id, l.qty - 1)} aria-label="Less">
+                      <button onClick={() => setQty(l.key, l.qty - 1)} aria-label="Less">
                         −
                       </button>
                       <span>{l.qty}</span>
-                      <button onClick={() => setQty(l.id, l.qty + 1)} aria-label="More">
+                      <button onClick={() => setQty(l.key, l.qty + 1)} aria-label="More">
                         +
                       </button>
                     </div>
-                    <button className="text-btn" onClick={() => remove(l.id)}>
+                    <button className="text-btn" onClick={() => remove(l.key)}>
                       Remove
                     </button>
                   </div>

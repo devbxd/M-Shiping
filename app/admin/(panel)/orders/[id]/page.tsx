@@ -48,13 +48,21 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
                 </thead>
                 <tbody>
                   {o.items.map((i) => (
-                    <tr key={i.productId}>
+                    <tr key={i.productId + (i.vid ?? "")}>
                       <td style={{ width: 60 }}>
                         <div className="mini-thumb">
                           <img src={img(i.image, 120)} alt="" />
                         </div>
                       </td>
-                      <td>{i.title}</td>
+                      <td>
+                        {i.title}
+                        {(i.variant || i.sku) && (
+                          <div style={{ marginTop: 4, fontSize: 13 }}>
+                            {i.variant && <b style={{ fontWeight: 600 }}>{i.variant}</b>}
+                            {i.sku && <span className="muted"> · SKU {i.sku}</span>}
+                          </div>
+                        )}
+                      </td>
                       <td className="r num">{i.qty}</td>
                       <td className="r num">{money(i.price * i.qty)}</td>
                       <td className="r num muted">{money(i.cost * i.qty)}</td>

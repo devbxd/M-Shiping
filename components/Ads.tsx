@@ -50,6 +50,30 @@ export function AdCards() {
   );
 }
 
+// Compact row of the three ads, sits right under the hero.
+export function AdRow() {
+  return (
+    <div className="wrap">
+      <div className="promo-row">
+        {ADS.map((ad) => (
+          <a key={ad.id} href={ad.href} target="_blank" rel="noopener sponsored" className="promo-mini" style={{ background: ad.bg, color: ad.fg }}>
+            {ad.image && <img src={ad.image} alt="" loading="lazy" />}
+            <span className="promo-mini-copy">
+              <span className="promo-brand" style={{ color: ad.accent }}>
+                {ad.brand}
+              </span>
+              <strong>{ad.title}</strong>
+            </span>
+            <span className="promo-mini-arrow" aria-hidden>
+              &rarr;
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Slim full-width banner, used between product rows.
 export function AdStrip({ index = 0 }: { index?: number }) {
   const ad = ADS[index % ADS.length];

@@ -48,7 +48,7 @@ export default function Checkout() {
             notes: f.get("notes"),
           },
           payment: f.get("payment"),
-          items: lines.map((l) => ({ productId: l.id, qty: l.qty })),
+          items: lines.map((l) => ({ productId: l.productId, vid: l.vid, qty: l.qty })),
         }),
       });
       const data = await res.json();
@@ -140,9 +140,10 @@ export default function Checkout() {
 
         <aside className="summary">
           {lines.map((l) => (
-            <div className="row" key={l.id}>
+            <div className="row" key={l.key}>
               <span style={{ maxWidth: 230 }}>
                 {l.qty} × {l.title}
+                {l.variant && <> ({l.variant})</>}
               </span>
               <span>{money(l.price * l.qty)}</span>
             </div>

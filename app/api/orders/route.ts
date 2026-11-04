@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
 import { createOrder, newOrderId } from "@/lib/orders";
 import { DELIVERY } from "@/lib/config";
-import type { Order, OrderItem } from "@/lib/types";
+import { variantLabel, type Order, type OrderItem } from "@/lib/types";
 
 const str = (v: unknown, max = 300) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
@@ -36,15 +36,22 @@ export async function POST(req: Request) {
     const p = getProduct(String(raw.productId));
     const qty = Math.max(1, Math.min(10, Math.floor(Number(raw.qty) || 1)));
     if (!p) continue;
+    const v = p.variants?.length ? p.variants.find((x) => x.vid === String(raw.vid ?? "")) : undefined;
+    if (p.variants?.length && !v) {
+      return NextResponse.json({ error: `Please choose a size/colour for “${p.title}”.` }, { status: 400 });
+    }
     items.push({
       productId: p.id,
       title: p.title,
-      image: p.images[0],
-      price: p.price,
-      cost: p.cost,
+      image: v?.image ?? p.images[0],
+      price: v?.price ?? p.price,
+      cost: v?.cost ?? p.cost,
       qty,
       supplier: p.supplier,
       supplierUrl: p.supplierUrl,
+      vid: v?.vid,
+      variant: v ? variantLabel(v) : undefined,
+      sku: v?.sku ?? p.supplierSku,
     });
   }
   if (!items.length) return NextResponse.json({ error: "Your bag is empty." }, { status: 400 });

@@ -46,9 +46,10 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         )}
         <div className="summary" style={{ position: "static" }}>
           {o.items.map((it) => (
-            <div className="row" key={it.productId}>
+            <div className="row" key={it.productId + (it.vid ?? "")}>
               <span>
                 {it.qty} × {it.title}
+                {it.variant && <> ({it.variant})</>}
               </span>
               <span>{money(it.price * it.qty)}</span>
             </div>

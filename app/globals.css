@@ -450,3 +450,33 @@ main { min-height: 60vh; }
 .band p { color: var(--ink-2); }
 .notice { background: var(--ink); }
 .logo em { color: var(--cedar-2); }
+
+/* product options (colour / size) */
+.opt { display: grid; gap: 10px; }
+.opt-head { display: flex; gap: 8px; font-size: 14px; }
+.opt-head span { color: var(--muted); }
+.opt-head b { font-weight: 600; }
+.opt-values { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt-values button {
+  min-width: 48px; height: 42px; padding: 0 14px; border: 1px solid var(--line); background: var(--card);
+  border-radius: var(--radius); cursor: pointer; font-size: 14px; transition: border-color .15s;
+}
+.opt-values button:hover { border-color: var(--ink); }
+.opt-values button.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); font-weight: 600; }
+.opt-values button.off { color: var(--muted); text-decoration: line-through; opacity: .5; cursor: not-allowed; }
+.line .meta .muted { font-size: 13px; }
+
+/* compact ad row under the hero */
+.promo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+.promo-mini { display: flex; align-items: center; gap: 14px; padding: 10px 16px 10px 10px; border-radius: 12px; min-height: 76px; transition: transform .2s; }
+.promo-mini:hover { transform: translateY(-2px); }
+.promo-mini img { width: 88px; height: 56px; object-fit: cover; object-position: left top; border-radius: 7px; flex: none; }
+.promo-mini-copy { display: grid; gap: 2px; min-width: 0; }
+.promo-mini .promo-brand { font-size: 12px; }
+.promo-mini strong { font-size: 14.5px; font-weight: 600; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.promo-mini-arrow { margin-left: auto; font-size: 18px; opacity: .7; flex: none; }
+@media (max-width: 900px) {
+  .promo-row { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 86%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-top: 14px; }
+  .promo-row::-webkit-scrollbar { display: none; }
+  .promo-mini { scroll-snap-align: start; }
+}
