@@ -4,6 +4,8 @@ import { categoriesOf, queryProducts, type Sort } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { SortSelect } from "./sort";
 import { Pager } from "@/components/Pager";
+import { AdStrip } from "@/components/Ads";
+import { Fragment } from "react";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Shop" };
@@ -72,8 +74,11 @@ export default async function Shop({ searchParams }: { searchParams: SP }) {
 
       {res.items.length ? (
         <div className="grid">
-          {res.items.map((p) => (
-            <ProductCard key={p.id} p={p} />
+          {res.items.map((p, i) => (
+            <Fragment key={p.id}>
+              <ProductCard p={p} />
+              {i === 11 && res.items.length > 16 && <AdStrip index={res.page - 1} />}
+            </Fragment>
           ))}
         </div>
       ) : (

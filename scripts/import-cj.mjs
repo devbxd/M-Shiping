@@ -159,7 +159,7 @@ function toProduct(p, department, catName) {
     supplierId: p.pid,
     supplierSku: p.productSku,
     supplierUrl: `https://cjdropshipping.com/product/-p-${p.pid}.html`,
-    images: [...new Set([p.productImage, ...images])].slice(0, 6),
+    images: [p.productImage], // remark images are often supplier screenshots; real gallery comes from enrich-cj
     reviews: p.listedNum,
     description: text || cleanTitle(p.productNameEn),
     weight,

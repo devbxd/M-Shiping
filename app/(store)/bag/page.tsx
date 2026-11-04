@@ -1,4 +1,5 @@
 "use client";
+import { img } from "@/lib/img";
 import Link from "next/link";
 import { useCart } from "@/components/Cart";
 import { DELIVERY } from "@/lib/config";
@@ -30,7 +31,7 @@ export default function Bag() {
             {lines.map((l) => (
               <div className="line" key={l.id}>
                 <Link href={`/product/${l.id}`} className="thumb">
-                  <img src={l.image} alt="" />
+                  <img src={img(l.image, 240)} alt="" />
                 </Link>
                 <div className="meta">
                   <Link href={`/product/${l.id}`}>{l.title}</Link>

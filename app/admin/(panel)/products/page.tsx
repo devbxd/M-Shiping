@@ -1,3 +1,4 @@
+import { img } from "@/lib/img";
 import Link from "next/link";
 import { queryProducts } from "@/lib/products";
 import { departmentName } from "@/lib/config";
@@ -44,7 +45,7 @@ export default async function Catalog({ searchParams }: { searchParams: Promise<
                 <tr key={p.id}>
                   <td style={{ width: 60 }}>
                     <div className="mini-thumb">
-                      <img src={p.images[0]} alt="" loading="lazy" />
+                      <img src={img(p.images[0], 120)} alt="" loading="lazy" />
                     </div>
                   </td>
                   <td>

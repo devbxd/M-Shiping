@@ -1,3 +1,4 @@
+import { img } from "@/lib/img";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrder } from "@/lib/orders";
@@ -50,7 +51,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
                     <tr key={i.productId}>
                       <td style={{ width: 60 }}>
                         <div className="mini-thumb">
-                          <img src={i.image} alt="" />
+                          <img src={img(i.image, 120)} alt="" />
                         </div>
                       </td>
                       <td>{i.title}</td>

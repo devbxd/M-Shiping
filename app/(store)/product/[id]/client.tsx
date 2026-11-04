@@ -1,4 +1,5 @@
 "use client";
+import { img } from "@/lib/img";
 import { useState } from "react";
 import { useCart, type CartLine } from "@/components/Cart";
 
@@ -7,12 +8,12 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
   return (
     <div className={"gallery" + (images.length < 2 ? " single" : "")}>
       <div className="stage">
-        <img src={images[i]} alt={title} />
+        <img src={img(images[i], 1000)} alt={title} />
       </div>
       <div className="thumbs">
         {images.map((src, n) => (
           <button key={src} className={n === i ? "on" : ""} onClick={() => setI(n)} aria-label={`Image ${n + 1}`}>
-            <img src={src} alt="" loading="lazy" />
+            <img src={img(src, 500)} alt="" loading="lazy" />
           </button>
         ))}
       </div>
