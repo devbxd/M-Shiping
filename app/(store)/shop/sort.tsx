@@ -18,7 +18,7 @@ export function SortSelect({ value }: { value: string }) {
       }}
     >
       <option value="new">Newest</option>
-      <option value="rating">Best rated</option>
+      <option value="rating">Most popular</option>
       <option value="price-asc">Price: low to high</option>
       <option value="price-desc">Price: high to low</option>
     </select>

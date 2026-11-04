@@ -28,6 +28,7 @@ export const DEPARTMENTS: Department[] = [
   { slug: "beauty", name: "Beauty", blurb: "Skin care, make-up, fragrance" },
   { slug: "home", name: "Home", blurb: "Furniture, decor and kitchen" },
   { slug: "sport", name: "Sport", blurb: "Training gear and outdoor" },
+  { slug: "kids", name: "Kids", blurb: "Clothes, toys and school" },
   { slug: "accessories", name: "Accessories", blurb: "Sunglasses and small things" },
 ];
 

@@ -363,3 +363,16 @@ main { min-height: 60vh; }
   .section-head { margin-bottom: 14px; }
 }
 @media (min-width: 561px) { .shop-search { display: none; } }
+.pager .gap { min-width: 24px; display: grid; place-items: center; color: var(--muted); }
+
+/* real supplier photos: full-bleed, no tint */
+.card-img { aspect-ratio: 4 / 5; }
+.card-img img { object-fit: cover; padding: 0; mix-blend-mode: normal; }
+.cat-img img { object-fit: cover; padding: 0; mix-blend-mode: normal; }
+.line .thumb img, .mini-thumb img { object-fit: cover; padding: 0; mix-blend-mode: normal; }
+.gallery .thumbs img, .gallery .stage img { object-fit: contain; padding: 0; mix-blend-mode: normal; background: #fff; }
+.gallery .stage, .gallery .thumbs button { background: #fff; }
+.panel-promo { display: grid; grid-template-rows: 1fr auto; }
+.panel-promo img { position: static; grid-row: 1; height: 100%; min-height: 0; object-fit: cover; padding: 0; mix-blend-mode: normal; }
+.panel-promo .copy { position: static; grid-row: 2; padding: clamp(20px, 2.6vw, 36px); }
+@media (max-width: 800px) { .panel-promo { min-height: 0; grid-template-rows: 340px auto; } }

@@ -3,6 +3,7 @@ import { DEPARTMENTS, departmentName } from "@/lib/config";
 import { categoriesOf, queryProducts, type Sort } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { SortSelect } from "./sort";
+import { Pager } from "@/components/Pager";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Shop" };
@@ -84,15 +85,7 @@ export default async function Shop({ searchParams }: { searchParams: SP }) {
         </div>
       )}
 
-      {res.pages > 1 && (
-        <nav className="pager" aria-label="Pages">
-          {Array.from({ length: res.pages }, (_, i) => i + 1).map((n) => (
-            <Link key={n} href={href({ page: n === 1 ? undefined : String(n) })} className={n === res.page ? "on" : ""}>
-              {n}
-            </Link>
-          ))}
-        </nav>
-      )}
+      <Pager page={res.page} pages={res.pages} href={(n) => href({ page: n === 1 ? undefined : String(n) })} />
     </div>
   );
 }

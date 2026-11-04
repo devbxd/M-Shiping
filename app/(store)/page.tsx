@@ -115,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Rail title="Best rated tech" href="/shop?d=tech&sort=rating" items={top("tech", 8)} />
+      <Rail title="Popular in tech" href="/shop?d=tech&sort=rating" items={top("tech", 8)} />
       <Rail title="For the home" href="/shop?d=home" items={top("home", 8)} />
       <Rail title="Beauty" href="/shop?d=beauty" items={top("beauty", 8)} />
       <div style={{ height: "clamp(56px, 7vw, 96px)" }} />

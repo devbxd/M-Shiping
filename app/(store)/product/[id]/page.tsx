@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             {money(p.price)}
             {p.compareAt && <s>{money(p.compareAt)}</s>}
           </span>
-          <p style={{ margin: 0, color: "var(--ink-2)", maxWidth: 520 }}>{p.description}</p>
+          {p.description && <p style={{ margin: 0, color: "var(--ink-2)", maxWidth: 520, whiteSpace: "pre-line" }}>{p.description}</p>}
           <BuyBox line={{ id: p.id, title: p.title, image: p.images[0], price: p.price }} />
           <div className="facts">
             <div>

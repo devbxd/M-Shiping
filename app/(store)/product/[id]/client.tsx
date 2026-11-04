@@ -6,15 +6,15 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
   const [i, setI] = useState(0);
   return (
     <div className={"gallery" + (images.length < 2 ? " single" : "")}>
+      <div className="stage">
+        <img src={images[i]} alt={title} />
+      </div>
       <div className="thumbs">
         {images.map((src, n) => (
           <button key={src} className={n === i ? "on" : ""} onClick={() => setI(n)} aria-label={`Image ${n + 1}`}>
-            <img src={src} alt="" />
+            <img src={src} alt="" loading="lazy" />
           </button>
         ))}
-      </div>
-      <div className="stage">
-        <img src={images[i]} alt={title} />
       </div>
     </div>
   );

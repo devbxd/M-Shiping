@@ -50,7 +50,7 @@ export function queryProducts(opts: {
       sorted.sort((a, b) => b.price - a.price);
       break;
     case "rating":
-      sorted.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+      sorted.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || (b.reviews ?? 0) - (a.reviews ?? 0));
       break;
     default:
       sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));

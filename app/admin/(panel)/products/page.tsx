@@ -2,6 +2,7 @@ import Link from "next/link";
 import { queryProducts } from "@/lib/products";
 import { departmentName } from "@/lib/config";
 import { money } from "@/lib/format";
+import { Pager } from "@/components/Pager";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function Catalog({ searchParams }: { searchParams: Promise<
       <div className="panel">
         <div className="panel-head">
           <span className="eyebrow">
-            <span className="num">{res.total}</span> products · import more with <code>npm run import:aliexpress</code>
+            <span className="num">{res.total}</span> products · import more with <code>npm run import:cj</code>
           </span>
         </div>
         <div className="table-scroll">
@@ -70,15 +71,11 @@ export default async function Catalog({ searchParams }: { searchParams: Promise<
           </table>
         </div>
       </div>
-      {res.pages > 1 && (
-        <nav className="pager">
-          {Array.from({ length: res.pages }, (_, i) => i + 1).map((n) => (
-            <Link key={n} href={`/admin/products?page=${n}${sp.q ? `&q=${encodeURIComponent(sp.q)}` : ""}`} className={n === res.page ? "on" : ""}>
-              {n}
-            </Link>
-          ))}
-        </nav>
-      )}
+      <Pager
+        page={res.page}
+        pages={res.pages}
+        href={(n) => `/admin/products?page=${n}${sp.q ? `&q=${encodeURIComponent(sp.q)}` : ""}`}
+      />
     </>
   );
 }
