@@ -17,13 +17,13 @@ export default async function Shop({ searchParams }: { searchParams: SP }) {
   const d = sp.d;
   const c = sp.c;
   const q = sp.q?.trim();
-  const sort = (sp.sort as Sort) || "new";
+  const sort = (sp.sort as Sort) || "price-asc";
   const page = Number(sp.page) || 1;
   const res = queryProducts({ department: d, category: c, q, sort, page });
   const cats = d ? categoriesOf(d) : [];
 
   const href = (patch: Record<string, string | undefined>) => {
-    const next = { d, c, q, sort: sort === "new" ? undefined : sort, ...patch };
+    const next = { d, c, q, sort: sort === "price-asc" ? undefined : sort, ...patch };
     const s = new URLSearchParams(Object.entries(next).filter(([, v]) => v) as [string, string][]).toString();
     return "/shop" + (s ? "?" + s : "");
   };

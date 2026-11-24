@@ -5,3 +5,4 @@ node_modules
 data/orders.json
 *.tsbuildinfo
 data/.cj-token.json
+data/pricing.json.tmp

@@ -20,7 +20,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
             Orders {pending > 0 && <b className="hot">{pending} new</b>}
           </Link>
           <Link href="/admin/products">
-            Catalog <b>{allProducts().length}</b>
+            Products &amp; prices <b>{allProducts().length}</b>
           </Link>
           <Link href="/" target="_blank">
             View store

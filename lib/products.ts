@@ -1,16 +1,36 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Product } from "./types";
+import { readPricing, pricingMtime, type PricingEntry } from "./pricing-store";
+import { DEFAULT_MARGIN, shelfPrice } from "./pricing";
 
 const FILE = path.join(process.cwd(), "data", "products.json");
 
-let cache: { mtime: number; items: Product[] } | null = null;
+let cache: { key: string; items: Product[] } | null = null;
+
+// Applies a custom margin and/or the latest live supplier cost.
+function applyPricing(p: Product, e: PricingEntry): Product {
+  const margin = e.margin ?? DEFAULT_MARGIN;
+  const live = e.history?.at(-1);
+  if (p.variants?.length) {
+    const variants = p.variants.map((v) => {
+      const cost = live?.vcosts?.[v.vid] ?? v.cost;
+      return { ...v, cost, price: shelfPrice(cost, margin) };
+    });
+    const cheapest = variants.reduce((a, b) => (b.price < a.price ? b : a));
+    return { ...p, variants, price: cheapest.price, cost: cheapest.cost };
+  }
+  const cost = live?.cost ?? p.cost;
+  return { ...p, cost, price: shelfPrice(cost, margin) };
+}
 
 export function allProducts(): Product[] {
   if (!fs.existsSync(FILE)) return [];
-  const mtime = fs.statSync(FILE).mtimeMs;
-  if (!cache || cache.mtime !== mtime) {
-    cache = { mtime, items: JSON.parse(fs.readFileSync(FILE, "utf8")) };
+  const key = `${fs.statSync(FILE).mtimeMs}:${pricingMtime()}`;
+  if (!cache || cache.key !== key) {
+    const raw: Product[] = JSON.parse(fs.readFileSync(FILE, "utf8"));
+    const pricing = readPricing();
+    cache = { key, items: raw.map((p) => (pricing[p.id] ? applyPricing(p, pricing[p.id]) : p)) };
   }
   return cache.items;
 }

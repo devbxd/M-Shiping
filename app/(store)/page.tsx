@@ -9,7 +9,9 @@ import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-const top = (department: string, n = 1) => queryProducts({ department, sort: "rating", perPage: n }).items;
+// most popular N of a department, shown cheapest first
+const top = (department: string, n = 1) =>
+  queryProducts({ department, sort: "rating", perPage: n }).items.sort((a, b) => a.price - b.price);
 
 function Rail({ title, href, items }: { title: string; href: string; items: Product[] }) {
   if (!items.length) return null;
@@ -44,7 +46,7 @@ export default function Home() {
     ...s,
     images: top(s.href.split("=")[1], 3).map((p) => p.images[0]),
   })).filter((s) => s.images.length === 3);
-  const latest = queryProducts({ sort: "new", perPage: 8 }).items;
+  const latest = queryProducts({ sort: "new", perPage: 8 }).items.sort((a, b) => a.price - b.price);
 
   return (
     <>

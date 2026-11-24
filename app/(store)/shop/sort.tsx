@@ -11,15 +11,15 @@ export function SortSelect({ value }: { value: string }) {
       value={value}
       onChange={(e) => {
         const p = new URLSearchParams(params.toString());
-        if (e.target.value === "new") p.delete("sort");
+        if (e.target.value === "price-asc") p.delete("sort");
         else p.set("sort", e.target.value);
         p.delete("page");
         router.push(path + (p.size ? "?" + p : ""));
       }}
     >
+      <option value="price-asc">Price: low to high</option>
       <option value="new">Newest</option>
       <option value="rating">Most popular</option>
-      <option value="price-asc">Price: low to high</option>
       <option value="price-desc">Price: high to low</option>
     </select>
   );
