@@ -1,4 +1,6 @@
 // House ads for the owner's other businesses. Edit text / links here.
+// Switch: false hides every ad on the site (home row, cards, banners); true shows them again.
+export const ADS_ENABLED = false;
 export type Ad = {
   id: string;
   brand: string;

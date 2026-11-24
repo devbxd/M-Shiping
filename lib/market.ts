@@ -47,6 +47,21 @@ export function percentile(sorted: number[], v: number) {
 
 export const median = (sorted: number[]) => sorted[Math.floor(sorted.length / 2)] ?? 0;
 
+// One plain-language recommendation per product.
+export type Advice = { tone: "good" | "warn" | "weak" | "ok"; title: string; text: string };
+export function advice(p: Product): Advice {
+  const s = statsFor(p);
+  const demand = percentile(s.demand, p.reviews ?? 0);
+  const pricePos = percentile(s.prices, p.price);
+  if (demand >= 60 && pricePos <= 60)
+    return { tone: "good", title: "Push it", text: "Lots of shops sell it and your price is good. Put it on the home page and in your posts." };
+  if (pricePos >= 75)
+    return { tone: "warn", title: "Price looks high", text: "Similar items on your site are cheaper. Lower the margin a little to sell more." };
+  if (demand < 30)
+    return { tone: "weak", title: "Few buyers", text: "Not many shops sell it. Keep it, but don't spend effort promoting it." };
+  return { tone: "ok", title: "Fine as it is", text: "Normal demand and a fair price. Nothing to change." };
+}
+
 // global demand rank (1 = most listed product in the whole catalog)
 let rankCache: { items: Product[]; rank: Map<string, number> } | null = null;
 export function demandRank(id: string) {

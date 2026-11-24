@@ -4,19 +4,20 @@ import { allProducts } from "@/lib/products";
 import { DEPARTMENTS, departmentName } from "@/lib/config";
 import { money } from "@/lib/format";
 import { Pager } from "@/components/Pager";
-import { DemandBar, PricePosition, PriceHistory } from "@/components/MarketCharts";
+import { MoneySplit, DemandMeter, PriceCompare, SupplierTrend } from "@/components/MarketCharts";
 import { readPricing, ensurePricing } from "@/lib/pricing-store";
 import { DEFAULT_MARGIN } from "@/lib/pricing";
-import { demandRank } from "@/lib/market";
-import { PriceControls } from "./controls";
+import { advice, demandRank } from "@/lib/market";
+import { MarginEditor, LiveCheck } from "./controls";
+import "./pricing.css";
 
 export const dynamic = "force-dynamic";
 
 type SP = Promise<{ q?: string; d?: string; sort?: string; page?: string }>;
-const PER_PAGE = 24;
+const PER_PAGE = 18;
 
 export default async function Catalog({ searchParams }: { searchParams: SP }) {
-  await ensurePricing();
+  await ensurePricing(true); // always fresh here: another server may have just saved a change
   const sp = await searchParams;
   const pricing = readPricing();
   let list = allProducts();
@@ -77,6 +78,25 @@ export default async function Catalog({ searchParams }: { searchParams: SP }) {
         </div>
       </div>
 
+      <div className="guide">
+        <div>
+          <b>Your profit</b>
+          <p>What you keep on each sale, after paying the product and its shipping. Change it with − / +, the site price updates right away.</p>
+        </div>
+        <div>
+          <b>How many people want it</b>
+          <p>How many online shops worldwide already sell this item. More shops = proven demand.</p>
+        </div>
+        <div>
+          <b>Price vs similar items</b>
+          <p>Your price (orange dot) next to the other items of the same kind on your site.</p>
+        </div>
+        <div>
+          <b>Advice</b>
+          <p>A simple suggestion based on demand and price. Green = push it, orange = price looks high.</p>
+        </div>
+      </div>
+
       <div className="panel" style={{ marginBottom: 20 }}>
         <div className="panel-head">
           <div className="tabs">
@@ -109,44 +129,60 @@ export default async function Catalog({ searchParams }: { searchParams: SP }) {
         {items.map((p) => {
           const e = pricing[p.id];
           const margin = e?.margin ?? DEFAULT_MARGIN;
+          const tip = advice(p);
           return (
             <article className="pcard" key={p.id}>
               <div className="pcard-top">
-                <div className="mini-thumb" style={{ width: 64, height: 64 }}>
-                  <img src={img(p.images[0], 160)} alt="" loading="lazy" />
-                </div>
+                <a href={"/product/" + p.id} target="_blank" className="pcard-img">
+                  <img src={img(p.images[0], 240)} alt="" loading="lazy" />
+                </a>
                 <div style={{ minWidth: 0 }}>
-                  <Link href={`/product/${p.id}`} target="_blank" className="pcard-title">
+                  <a href={"/product/" + p.id} target="_blank" className="pcard-title">
                     {p.title}
-                  </Link>
-                  <div className="muted" style={{ fontSize: 12.5 }}>
-                    {departmentName(p.department)} · {p.category} · #{demandRank(p.id)} overall
+                  </a>
+                  <div className="muted" style={{ fontSize: 12.5, marginTop: 2 }}>
+                    {departmentName(p.department)} · {p.category}
                   </div>
+                  <div className="pcard-rank">#{demandRank(p.id)} best seller of your shop</div>
                 </div>
               </div>
-              <div className="pcard-nums">
+
+              <div className="pcard-sum">
                 <div>
-                  <span>Price</span>
+                  <span>Customer pays</span>
                   <b>{money(p.price)}</b>
                 </div>
-                <div>
-                  <span>Cost</span>
-                  <b>{money(p.cost)}</b>
+                <div className="arrow" aria-hidden>
+                  →
                 </div>
                 <div>
-                  <span>Margin</span>
-                  <b style={{ color: "var(--cedar-2)" }}>{money(p.price - p.cost)}</b>
+                  <span>You earn</span>
+                  <b className="earn">{money(p.price - p.cost)}</b>
                 </div>
               </div>
-              <PriceControls id={p.id} margin={margin} isCustom={e?.margin !== undefined} canLive={p.supplier === "cj"} />
-              <DemandBar p={p} />
-              <PricePosition p={p} />
-              <PriceHistory p={p} history={e?.history} />
-              {p.supplierUrl && (
-                <a href={p.supplierUrl} target="_blank" rel="noreferrer" className="link-arrow" style={{ fontSize: 13 }}>
-                  Open on {p.supplier.toUpperCase()}
-                </a>
-              )}
+              <MoneySplit p={p} />
+
+              <div className={"advice " + tip.tone}>
+                <b>{tip.title}</b>
+                <span>{tip.text}</span>
+              </div>
+
+              <MarginEditor id={p.id} cost={p.cost} margin={margin} isCustom={e?.margin !== undefined} />
+
+              <div className="pcard-section">
+                <DemandMeter p={p} />
+                <PriceCompare p={p} />
+                <SupplierTrend p={p} history={e?.history} />
+              </div>
+
+              <div className="pcard-foot">
+                {p.supplier === "cj" && <LiveCheck id={p.id} />}
+                {p.supplierUrl && (
+                  <a href={p.supplierUrl} target="_blank" rel="noreferrer" className="link-arrow" style={{ fontSize: 13 }}>
+                    See it on CJ
+                  </a>
+                )}
+              </div>
             </article>
           );
         })}

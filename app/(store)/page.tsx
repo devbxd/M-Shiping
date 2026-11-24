@@ -6,6 +6,7 @@ import { allProducts, queryProducts } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroSlider, type Slide } from "@/components/HeroSlider";
 import { AdCards, AdRow, AdStrip } from "@/components/Ads";
+import { ADS_ENABLED } from "@/lib/ads";
 import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -152,11 +153,13 @@ export default async function Home() {
       <Rail title="Kids" href="/shop?d=kids" items={cheapTop("kids")} />
       <Rail title="Beauty" href="/shop?d=beauty" items={cheapTop("beauty")} />
 
-      <section className="section">
-        <div className="wrap">
-          <AdStrip index={2} />
-        </div>
-      </section>
+      {ADS_ENABLED && (
+        <section className="section">
+          <div className="wrap">
+            <AdStrip index={2} />
+          </div>
+        </section>
+      )}
       <div style={{ height: "clamp(56px, 7vw, 96px)" }} />
     </>
   );

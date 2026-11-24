@@ -1,4 +1,4 @@
-import { ADS, type Ad } from "@/lib/ads";
+import { ADS, ADS_ENABLED, type Ad } from "@/lib/ads";
 
 function Visual({ ad }: { ad: Ad }) {
   if (!ad.image) return null;
@@ -17,6 +17,7 @@ function Visual({ ad }: { ad: Ad }) {
 }
 
 export function AdCards() {
+  if (!ADS_ENABLED) return null;
   return (
     <section className="section">
       <div className="wrap">
@@ -52,6 +53,7 @@ export function AdCards() {
 
 // Compact row of the three ads, sits right under the hero.
 export function AdRow() {
+  if (!ADS_ENABLED) return null;
   return (
     <div className="wrap">
       <div className="promo-row">
@@ -76,6 +78,7 @@ export function AdRow() {
 
 // Slim full-width banner, used between product rows.
 export function AdStrip({ index = 0 }: { index?: number }) {
+  if (!ADS_ENABLED) return null;
   const ad = ADS[index % ADS.length];
   return (
     <a href={ad.href} target="_blank" rel="noopener sponsored" className="promo-strip" style={{ background: ad.bg, color: ad.fg }}>
