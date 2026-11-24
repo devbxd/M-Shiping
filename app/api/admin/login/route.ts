@@ -9,12 +9,14 @@ export async function POST(req: Request) {
     return NextResponse.redirect(new URL("/admin/login?e=1", base), 303);
   }
   const res = NextResponse.redirect(new URL("/admin", base), 303);
+  const remember = form.get("remember") === "on";
   res.cookies.set(ADMIN_COOKIE, await adminToken(), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 14,
+    // remembered devices stay signed in for a year; otherwise until the browser closes
+    ...(remember ? { maxAge: 60 * 60 * 24 * 365 } : {}),
   });
   return res;
 }
