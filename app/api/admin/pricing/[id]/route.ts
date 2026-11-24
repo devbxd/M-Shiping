@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
-import { updatePricing, readPricing } from "@/lib/pricing-store";
+import { updatePricing, readPricing, ensurePricing } from "@/lib/pricing-store";
 import { liveCost } from "@/lib/cj";
 
 // POST { margin: number | null }  -> set (or reset) this product's margin
 // POST { live: true }             -> fetch the supplier's current price and record it
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  await ensurePricing();
   const { id } = await params;
   const p = getProduct(id);
   if (!p) return NextResponse.json({ error: "not found" }, { status: 404 });

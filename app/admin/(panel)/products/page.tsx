@@ -5,7 +5,7 @@ import { DEPARTMENTS, departmentName } from "@/lib/config";
 import { money } from "@/lib/format";
 import { Pager } from "@/components/Pager";
 import { DemandBar, PricePosition, PriceHistory } from "@/components/MarketCharts";
-import { readPricing } from "@/lib/pricing-store";
+import { readPricing, ensurePricing } from "@/lib/pricing-store";
 import { DEFAULT_MARGIN } from "@/lib/pricing";
 import { demandRank } from "@/lib/market";
 import { PriceControls } from "./controls";
@@ -16,6 +16,7 @@ type SP = Promise<{ q?: string; d?: string; sort?: string; page?: string }>;
 const PER_PAGE = 24;
 
 export default async function Catalog({ searchParams }: { searchParams: SP }) {
+  await ensurePricing();
   const sp = await searchParams;
   const pricing = readPricing();
   let list = allProducts();

@@ -9,7 +9,7 @@ const TABS: (OrderStatus | "all")[] = ["pending", "confirmed", "purchased", "shi
 
 export default async function Orders({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
   const s = ((await searchParams).s as OrderStatus | "all") || "pending";
-  const all = listOrders();
+  const all = await listOrders();
   const shown = s === "all" ? all : all.filter((o) => o.status === s);
   const live = all.filter((o) => o.status !== "cancelled");
   const revenue = live.reduce((t, o) => t + o.total, 0);

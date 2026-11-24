@@ -8,7 +8,7 @@ import { OrderActions } from "../../client";
 export const dynamic = "force-dynamic";
 
 export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
-  const o = getOrder((await params).id);
+  const o = await getOrder((await params).id);
   if (!o) notFound();
   const cost = o.items.reduce((t, i) => t + i.cost * i.qty, 0);
   const wa = "https://wa.me/" + o.customer.phone.replace(/\D/g, "").replace(/^0+/, "").replace(/^(?!961)/, "961");

@@ -7,8 +7,8 @@ import { LogoutButton } from "./client";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard" };
 
-export default function PanelLayout({ children }: { children: React.ReactNode }) {
-  const pending = listOrders("pending").length;
+export default async function PanelLayout({ children }: { children: React.ReactNode }) {
+  const pending = (await listOrders("pending")).length;
   return (
     <div className="admin">
       <aside className="admin-side">

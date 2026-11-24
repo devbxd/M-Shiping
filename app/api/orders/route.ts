@@ -1,3 +1,4 @@
+import { ensurePricing } from "@/lib/pricing-store";
 import { NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
 import { createOrder, newOrderId } from "@/lib/orders";
@@ -7,6 +8,7 @@ import { variantLabel, type Order, type OrderItem } from "@/lib/types";
 const str = (v: unknown, max = 300) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
 export async function POST(req: Request) {
+  await ensurePricing();
   let body: any;
   try {
     body = await req.json();
@@ -72,6 +74,10 @@ export async function POST(req: Request) {
     total: +(subtotal + delivery).toFixed(2),
     history: [{ at: now, status: "pending" }],
   };
-  createOrder(order);
+  try {
+    await createOrder(order);
+  } catch (err) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+  }
   return NextResponse.json({ id: order.id });
 }

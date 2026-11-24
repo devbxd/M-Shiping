@@ -1,3 +1,4 @@
+import { ensurePricing } from "@/lib/pricing-store";
 import Link from "next/link";
 import { DEPARTMENTS, departmentName } from "@/lib/config";
 import { categoriesOf, queryProducts, type Sort } from "@/lib/products";
@@ -13,6 +14,7 @@ export const metadata = { title: "Shop" };
 type SP = Promise<Record<string, string | undefined>>;
 
 export default async function Shop({ searchParams }: { searchParams: SP }) {
+  await ensurePricing();
   const sp = await searchParams;
   const d = sp.d;
   const c = sp.c;

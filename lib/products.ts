@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Product } from "./types";
-import { readPricing, pricingMtime, type PricingEntry } from "./pricing-store";
+import { readPricing, pricingVersion, type PricingEntry } from "./pricing-store";
 import { DEFAULT_MARGIN, shelfPrice } from "./pricing";
 
 const FILE = path.join(process.cwd(), "data", "products.json");
@@ -26,7 +26,7 @@ function applyPricing(p: Product, e: PricingEntry): Product {
 
 export function allProducts(): Product[] {
   if (!fs.existsSync(FILE)) return [];
-  const key = `${fs.statSync(FILE).mtimeMs}:${pricingMtime()}`;
+  const key = `${fs.statSync(FILE).mtimeMs}:${pricingVersion()}`;
   if (!cache || cache.key !== key) {
     const raw: Product[] = JSON.parse(fs.readFileSync(FILE, "utf8"));
     const pricing = readPricing();

@@ -16,7 +16,7 @@ const FLOW = [
 ] as const;
 
 export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
-  const o = getOrder((await params).id);
+  const o = await getOrder((await params).id);
   if (!o) notFound();
   const reached = FLOW.findIndex(([s]) => s === o.status);
   const first = o.customer.name.split(" ")[0];

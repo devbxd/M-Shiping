@@ -15,7 +15,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   for (const k of ["supplierOrderRef", "tracking", "adminNote"] as const) {
     if (typeof b[k] === "string") patch[k] = b[k].slice(0, 1000);
   }
-  const o = updateOrder(id, patch, typeof b.note === "string" ? b.note.slice(0, 300) : undefined);
+  const o = await updateOrder(id, patch, typeof b.note === "string" ? b.note.slice(0, 300) : undefined);
   if (!o) return NextResponse.json({ error: "not found" }, { status: 404 });
   return NextResponse.json(o);
 }

@@ -1,36 +1,28 @@
-import fs from "node:fs";
-import path from "node:path";
+import { kvGet, kvSet } from "./kv";
 
-// Per-product pricing decisions and live supplier price history.
-// Stored in data/pricing.json (local). On Vercel the disk is read-only, so
-// saving needs a database — see README.
+// Per-product pricing decisions and live supplier price history (key "pricing").
 export type PricePoint = { at: string; cost: number; vcosts?: Record<string, number> };
 export type PricingEntry = { margin?: number; history?: PricePoint[] };
 export type PricingData = Record<string, PricingEntry>;
 
-const FILE = path.join(process.cwd(), "data", "pricing.json");
-let cache: { mtime: number; data: PricingData } | null = null;
+// allProducts() is synchronous, so pricing lives in memory and is refreshed by
+// ensurePricing(), which every page / route that shows prices awaits first.
+let cache: { at: number; data: PricingData; version: number } = { at: 0, data: {}, version: 0 };
+const TTL = 15_000;
 
-export function pricingMtime() {
-  return fs.existsSync(FILE) ? fs.statSync(FILE).mtimeMs : 0;
+export async function ensurePricing(force = false) {
+  if (!force && Date.now() - cache.at < TTL) return;
+  const data = await kvGet<PricingData>("pricing", {});
+  cache = { at: Date.now(), data, version: cache.version + 1 };
 }
 
-export function readPricing(): PricingData {
-  const mtime = pricingMtime();
-  if (!mtime) return {};
-  if (!cache || cache.mtime !== mtime) cache = { mtime, data: JSON.parse(fs.readFileSync(FILE, "utf8")) };
-  return cache.data;
-}
+export const readPricing = () => cache.data;
+export const pricingVersion = () => cache.version;
 
-export function updatePricing(id: string, fn: (e: PricingEntry) => PricingEntry) {
-  const data = { ...readPricing() };
-  data[id] = fn({ ...(data[id] ?? {}) });
-  try {
-    fs.writeFileSync(FILE + ".tmp", JSON.stringify(data));
-    fs.renameSync(FILE + ".tmp", FILE);
-  } catch {
-    throw new Error("Cannot save here: this host has a read-only disk. Connect a database to save prices online.");
-  }
-  cache = null;
+export async function updatePricing(id: string, fn: (e: PricingEntry) => PricingEntry) {
+  await ensurePricing(true);
+  const data = { ...cache.data, [id]: fn({ ...(cache.data[id] ?? {}) }) };
+  await kvSet("pricing", data);
+  cache = { at: Date.now(), data, version: cache.version + 1 };
   return data[id];
 }

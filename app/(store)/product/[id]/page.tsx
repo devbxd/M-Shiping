@@ -1,3 +1,4 @@
+import { ensurePricing } from "@/lib/pricing-store";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DELIVERY, SHOP, departmentName } from "@/lib/config";
@@ -14,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  await ensurePricing();
   const p = getProduct((await params).id);
   if (!p) notFound();
   const related = queryProducts({ category: p.category, sort: "rating", perPage: 5 }).items.filter((x) => x.id !== p.id).slice(0, 4).sort((a, b) => a.price - b.price);

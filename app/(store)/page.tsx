@@ -1,3 +1,4 @@
+import { ensurePricing } from "@/lib/pricing-store";
 import { img } from "@/lib/img";
 import Link from "next/link";
 import { DEPARTMENTS } from "@/lib/config";
@@ -51,7 +52,8 @@ const SLIDES: Omit<Slide, "images">[] = [
   { kicker: "Home", title: "Make home yours", text: "Bedding, lights, kitchen and storage for every room.", cta: "Shop home", href: "/shop?d=home", bg: "var(--lilac)" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  await ensurePricing();
   const slides: Slide[] = SLIDES.map((s) => ({
     ...s,
     images: top(s.href.split("=")[1], 3).map((p) => p.images[0]),
