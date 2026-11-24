@@ -1,7 +1,7 @@
 import { img } from "@/lib/img";
 import Link from "next/link";
 import { DEPARTMENTS } from "@/lib/config";
-import { queryProducts } from "@/lib/products";
+import { allProducts, queryProducts } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroSlider, type Slide } from "@/components/HeroSlider";
 import { AdCards, AdRow, AdStrip } from "@/components/Ads";
@@ -9,9 +9,19 @@ import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-// most popular N of a department, shown cheapest first
-const top = (department: string, n = 1) =>
-  queryProducts({ department, sort: "rating", perPage: n }).items.sort((a, b) => a.price - b.price);
+const byPrice = (a: Product, b: Product) => a.price - b.price;
+const byDemand = (a: Product, b: Product) => (b.reviews ?? 0) - (a.reviews ?? 0);
+
+// most popular N of a department (pictures for the hero and category circles)
+const top = (department: string, n = 1) => queryProducts({ department, sort: "rating", perPage: n }).items;
+
+// most popular N among the cheaper half of a department, shown cheapest first
+function cheapTop(department: string, n = 8) {
+  const list = allProducts().filter((p) => p.department === department);
+  const prices = list.map((p) => p.price).sort((a, b) => a - b);
+  const median = prices[Math.floor(prices.length / 2)] ?? Infinity;
+  return list.filter((p) => p.price <= median).sort(byDemand).slice(0, n).sort(byPrice);
+}
 
 function Rail({ title, href, items }: { title: string; href: string; items: Product[] }) {
   if (!items.length) return null;
@@ -46,12 +56,34 @@ export default function Home() {
     ...s,
     images: top(s.href.split("=")[1], 3).map((p) => p.images[0]),
   })).filter((s) => s.images.length === 3);
-  const latest = queryProducts({ sort: "new", perPage: 8 }).items.sort((a, b) => a.price - b.price);
+  const all = allProducts();
+  const under10 = all.filter((p) => p.price < 10).sort(byDemand).slice(0, 8).sort(byPrice);
+  const latest = all
+    .filter((p) => p.price < 15)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 8)
+    .sort(byPrice);
 
   return (
     <>
       {slides.length > 0 && <HeroSlider slides={slides} />}
       <AdRow />
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <h2 className="h2">Under $10</h2>
+            <Link href="/shop?max=10" className="link-arrow">
+              See all
+            </Link>
+          </div>
+          <div className="grid">
+            {under10.map((p) => (
+              <ProductCard key={p.id} p={p} />
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="section">
         <div className="wrap">
@@ -76,7 +108,7 @@ export default function Home() {
         <div className="wrap">
           <div className="section-head">
             <h2 className="h2">New in</h2>
-            <Link href="/shop" className="link-arrow">
+            <Link href="/shop?sort=new&max=15" className="link-arrow">
               See all
             </Link>
           </div>
@@ -88,13 +120,13 @@ export default function Home() {
         </div>
       </section>
 
-      <Rail title="Popular in women" href="/shop?d=women&sort=rating" items={top("women", 8)} />
-      <Rail title="Popular in tech" href="/shop?d=tech&sort=rating" items={top("tech", 8)} />
+      <Rail title="Popular in women" href="/shop?d=women" items={cheapTop("women")} />
+      <Rail title="Popular in tech" href="/shop?d=tech" items={cheapTop("tech")} />
 
       <AdCards />
 
-      <Rail title="Shoes everyone is buying" href="/shop?d=shoes&sort=rating" items={top("shoes", 8)} />
-      <Rail title="For the home" href="/shop?d=home&sort=rating" items={top("home", 8)} />
+      <Rail title="Shoes everyone is buying" href="/shop?d=shoes" items={cheapTop("shoes")} />
+      <Rail title="For the home" href="/shop?d=home" items={cheapTop("home")} />
 
       <section className="band">
         <div className="wrap">
@@ -115,8 +147,8 @@ export default function Home() {
         </div>
       </section>
 
-      <Rail title="Kids" href="/shop?d=kids&sort=rating" items={top("kids", 8)} />
-      <Rail title="Beauty" href="/shop?d=beauty&sort=rating" items={top("beauty", 8)} />
+      <Rail title="Kids" href="/shop?d=kids" items={cheapTop("kids")} />
+      <Rail title="Beauty" href="/shop?d=beauty" items={cheapTop("beauty")} />
 
       <section className="section">
         <div className="wrap">

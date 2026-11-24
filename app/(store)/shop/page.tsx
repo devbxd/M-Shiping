@@ -19,16 +19,17 @@ export default async function Shop({ searchParams }: { searchParams: SP }) {
   const q = sp.q?.trim();
   const sort = (sp.sort as Sort) || "price-asc";
   const page = Number(sp.page) || 1;
-  const res = queryProducts({ department: d, category: c, q, sort, page });
+  const max = Number(sp.max) || undefined;
+  const res = queryProducts({ department: d, category: c, q, sort, page, max });
   const cats = d ? categoriesOf(d) : [];
 
   const href = (patch: Record<string, string | undefined>) => {
-    const next = { d, c, q, sort: sort === "price-asc" ? undefined : sort, ...patch };
+    const next = { d, c, q, max: max ? String(max) : undefined, sort: sort === "price-asc" ? undefined : sort, ...patch };
     const s = new URLSearchParams(Object.entries(next).filter(([, v]) => v) as [string, string][]).toString();
     return "/shop" + (s ? "?" + s : "");
   };
 
-  const title = q ? `Results for “${q}”` : d ? departmentName(d) : "All products";
+  const title = q ? `Results for “${q}”` : d ? departmentName(d) : max ? `Under $${max}` : "All products";
 
   return (
     <div className="wrap shop">
