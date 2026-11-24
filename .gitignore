@@ -8,3 +8,4 @@ data/.cj-token.json
 data/pricing.json.tmp
 data/pricing.json
 *.tmp
+_private/

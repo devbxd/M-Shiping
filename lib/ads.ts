@@ -1,6 +1,7 @@
-// House ads for the owner's other businesses. Edit text / links here.
-// Switch: false hides every ad on the site (home row, cards, banners); true shows them again.
-export const ADS_ENABLED = false;
+// House ads. Currently none on the site.
+// The previous ads (text, links, images) are kept locally in _private/ads/ (not in git).
+// To bring them back: copy _private/ads/ads.ts over this file, the images to public/ads/,
+// and set ADS_ENABLED = true.
 export type Ad = {
   id: string;
   brand: string;
@@ -14,41 +15,5 @@ export type Ad = {
   accent: string;
 };
 
-export const ADS: Ad[] = [
-  {
-    id: "cyber",
-    brand: "M&S Cyber Systems",
-    title: "Want a store like this one?",
-    text: "Websites, online stores, dashboards and AI for businesses in Lebanon and Kuwait.",
-    cta: "mscybersystem.site",
-    href: "https://mscybersystem.site/?ref=mshopping",
-    image: "/ads/mshopping.jpg",
-    bg: "#0a0a0a",
-    fg: "#ffffff",
-    accent: "#a3a3a3",
-  },
-  {
-    id: "invoicing",
-    brand: "M&S Agency Invoicing",
-    title: "Run your travel agency on one system",
-    text: "Quotes, invoices, tickets, hotels, visas and payments. Used every day by six agencies.",
-    cta: "See the system",
-    href: "https://mscybersystem.site/project.html?p=invoicing&ref=mshopping",
-    image: "/ads/dash-msia.jpg",
-    bg: "#0f2a4a",
-    fg: "#ffffff",
-    accent: "#9fb6d4",
-  },
-  {
-    id: "whitesky",
-    brand: "White Sky Travel",
-    title: "Flights, hotels and visas, Lebanon ⇄ Kuwait",
-    text: "Offices in Kuwait City and Cheka. Tell them where you want to go, they handle the rest.",
-    cta: "whiteskytravelsagency.com",
-    href: "https://whiteskytravelsagency.com/?ref=mshopping",
-    image: "/ads/whitesky.jpg",
-    bg: "#0b1426",
-    fg: "#ffffff",
-    accent: "#d4af6a",
-  },
-];
+export const ADS_ENABLED = false;
+export const ADS: Ad[] = [];

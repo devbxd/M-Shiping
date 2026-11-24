@@ -93,15 +93,15 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h6>Contact</h6>
+            <h6>Departments</h6>
             <ul>
+              {DEPARTMENTS.slice(6).map((d) => (
+                <li key={d.slug}>
+                  <Link href={`/shop?d=${d.slug}`}>{d.name}</Link>
+                </li>
+              ))}
               <li>
-                <a href={SHOP.whatsappLink} target="_blank" rel="noopener">
-                  WhatsApp {SHOP.whatsapp}
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${SHOP.email}`}>{SHOP.email}</a>
+                <Link href="/shop?max=10">Under $10</Link>
               </li>
             </ul>
           </div>

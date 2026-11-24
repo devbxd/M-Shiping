@@ -1,7 +1,7 @@
 import { ensurePricing } from "@/lib/pricing-store";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DELIVERY, SHOP, departmentName } from "@/lib/config";
+import { DELIVERY, departmentName } from "@/lib/config";
 import { getProduct, queryProducts } from "@/lib/products";
 import { money } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
@@ -50,12 +50,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <div>
               <span>Payment</span>
               <span>Cash on delivery or Whish</span>
-            </div>
-            <div>
-              <span>Questions?</span>
-              <a href={`${SHOP.whatsappLink}?text=${encodeURIComponent("Hi! About: " + p.title)}`} target="_blank" rel="noopener" className="link-arrow">
-                WhatsApp us
-              </a>
             </div>
             {p.rating && p.rating >= 4 ? (
               <div>
