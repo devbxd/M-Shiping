@@ -1,8 +1,9 @@
-// Turns a supplier cost into our shelf price. Tune MARKUP / HANDLING to taste.
-export const MARKUP = 1.45; // +45% on supplier cost
-export const HANDLING = 2; // flat per item, covers forwarding & packaging
+// Turns a supplier cost (product + estimated shipping to Lebanon) into our shelf price.
+// Rule: flat margin per item, rounded up to the next $x.x9 so it never drops below MARGIN.
+export const MARGIN = 3.5; // USD earned per item
 
 export function shelfPrice(cost) {
-  const raw = cost * MARKUP + HANDLING;
-  return Math.max(1.99, Math.ceil(raw) - 0.01);
+  const target = cost + MARGIN;
+  const tenths = Math.ceil(Math.round((target + 0.01) * 1000) / 100); // next 10-cent step
+  return +(tenths / 10 - 0.01).toFixed(2);
 }

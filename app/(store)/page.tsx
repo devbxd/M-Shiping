@@ -34,7 +34,7 @@ function Rail({ title, href, items }: { title: string; href: string; items: Prod
 
 const SLIDES: Omit<Slide, "images">[] = [
   { kicker: "Women", title: "The new season edit", text: "Dresses, tops, bags and jewellery, delivered anywhere in Lebanon.", cta: "Shop women", href: "/shop?d=women", bg: "var(--blush)" },
-  { kicker: "Shoes", title: "Step into something new", text: "Sneakers, heels, sandals and boots from $11.", cta: "Shop shoes", href: "/shop?d=shoes", bg: "var(--sand)" },
+  { kicker: "Shoes", title: "Step into something new", text: "Sneakers, heels, sandals and boots from $9.", cta: "Shop shoes", href: "/shop?d=shoes", bg: "var(--sand)" },
   { kicker: "Tech", title: "Tech for less", text: "Earbuds, smart watches, chargers and gadgets that actually work.", cta: "Shop tech", href: "/shop?d=tech", bg: "var(--sage)" },
   { kicker: "Home", title: "Make home yours", text: "Bedding, lights, kitchen and storage for every room.", cta: "Shop home", href: "/shop?d=home", bg: "var(--lilac)" },
 ];

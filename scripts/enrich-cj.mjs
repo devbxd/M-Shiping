@@ -17,12 +17,16 @@ const tok = JSON.parse(fs.readFileSync("data/.cj-token.json", "utf8")).token;
 const shipping = (grams) => 2.5 + (grams || 300) * 0.012; // keep in sync with import-cj.mjs
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-let last = 0;
+let nextSlot = 0;
+async function slot() {
+  const now = Date.now();
+  const at = Math.max(now, nextSlot);
+  nextSlot = at + 1100; // ≈ 1 request / second, but several can be in flight
+  if (at > now) await sleep(at - now);
+}
 async function query(pid) {
   for (let attempt = 0; attempt < 4; attempt++) {
-    const wait = 1150 - (Date.now() - last);
-    if (wait > 0) await sleep(wait);
-    last = Date.now();
+    await slot();
     try {
       const res = await fetch(`${BASE}/product/query?pid=${pid}`, { headers: { "CJ-Access-Token": tok } });
       const json = await res.json();
@@ -73,7 +77,7 @@ function save() {
   fs.renameSync(FILE + ".tmp", FILE);
 }
 
-for (const p of todo) {
+async function enrich(p) {
   const d = await query(p.supplierId);
   if (d) {
     let gallery = d.productImageSet;
@@ -88,11 +92,16 @@ for (const p of todo) {
       p.cost = p.variants.find((v) => v.price === p.price).cost;
     }
   }
-  p.enriched = true;
+  if (d) p.enriched = true; // failures are retried on the next run
   if (++done % 50 === 0) {
     save();
     console.log(`${done}/${todo.length}`);
   }
 }
+
+const queue = [...todo];
+await Promise.all(Array.from({ length: 5 }, async () => {
+  while (queue.length) await enrich(queue.shift());
+}));
 save();
 console.log(`Done: ${done} enriched`);
